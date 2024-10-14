@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:test_image_picker/exts/media_service.dart';
 
 void main() {
   runApp(MyApp());
@@ -62,8 +62,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var _permissionGallery = Platform.isAndroid ? await Permission.storage.status : await Permission.photos.status;
-          print(">>> $_permissionGallery");
+          await PermissionService.getImageAndVideoPermission();
+
+          // var _permissionGallery = Platform.isAndroid ? await Permission.storage.status : await Permission.photos.status;
+          // print(">>> $_permissionGallery");
           ImagePicker plugin = ImagePicker();
           await plugin.getImage(source: ImageSource.gallery);
         },
