@@ -1,11 +1,17 @@
 import 'package:flutter/services.dart';
 
-class PermissionService {
+class MediaService {
   static const MethodChannel channel = MethodChannel("HEHEHE");
+
+
+  static String subscribeListenChannel(Function(dynamic) getUriImage) {
+
+  }
 
   static Future<bool> getImageAndVideoPermission() async {
     try {
-      final bool result = await channel.invokeMethod('getImageAndVideoPermission');
+      final bool result =
+          await channel.invokeMethod('getImageAndVideoPermission');
       return result;
     } catch (e) {
       print(">>> $e");

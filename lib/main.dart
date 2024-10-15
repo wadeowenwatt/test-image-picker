@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:test_image_picker/exts/media_service.dart';
 
 void main() {
@@ -33,12 +33,27 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  String uriImagePick = "";
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  MethodChannel listenerChannel = MethodChannel("HAHAHA");
+
+  @override
+  void initState() {
+    super.initState();
+    setMethodHandler();
+  }
+
+  void setMethodHandler() {
+    listenerChannel.setMethodCallHandler((call) async {
+      if (call.method == 'imagePickerResult') {
+        setState(() {
+          print(">>> ${call.arguments}");
+          uriImagePick = call.arguments;
+        });
+      }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
+            Image.file(File(uriImagePick)),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
@@ -62,12 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await PermissionService.getImageAndVideoPermission();
+          // await MediaService.getImageAndVideoPermission();
 
-          // var _permissionGallery = Platform.isAndroid ? await Permission.storage.status : await Permission.photos.status;
-          // print(">>> $_permissionGallery");
-          ImagePicker plugin = ImagePicker();
-          await plugin.getImage(source: ImageSource.gallery);
+          await MediaService.getImage();
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
